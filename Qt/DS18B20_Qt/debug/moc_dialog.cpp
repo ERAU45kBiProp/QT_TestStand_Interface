@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Dialog_t {
-    QByteArrayData data[5];
-    char stringdata0[50];
+    QByteArrayData data[6];
+    char stringdata0[64];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,14 +32,15 @@ struct qt_meta_stringdata_Dialog_t {
 static const qt_meta_stringdata_Dialog_t qt_meta_stringdata_Dialog = {
     {
 QT_MOC_LITERAL(0, 0, 6), // "Dialog"
-QT_MOC_LITERAL(1, 7, 10), // "readSerial"
-QT_MOC_LITERAL(2, 18, 0), // ""
-QT_MOC_LITERAL(3, 19, 17), // "updateTemperature"
-QT_MOC_LITERAL(4, 37, 12) // "handleButton"
+QT_MOC_LITERAL(1, 7, 15), // "keyReleaseEvent"
+QT_MOC_LITERAL(2, 23, 0), // ""
+QT_MOC_LITERAL(3, 24, 10), // "QKeyEvent*"
+QT_MOC_LITERAL(4, 35, 10), // "readSerial"
+QT_MOC_LITERAL(5, 46, 17) // "updateTemperature"
 
     },
-    "Dialog\0readSerial\0\0updateTemperature\0"
-    "handleButton"
+    "Dialog\0keyReleaseEvent\0\0QKeyEvent*\0"
+    "readSerial\0updateTemperature"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,14 +58,14 @@ static const uint qt_meta_data_Dialog[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   29,    2, 0x08 /* Private */,
-       3,    1,   30,    2, 0x08 /* Private */,
-       4,    0,   33,    2, 0x08 /* Private */,
+       1,    1,   29,    2, 0x08 /* Private */,
+       4,    0,   32,    2, 0x08 /* Private */,
+       5,    1,   33,    2, 0x08 /* Private */,
 
  // slots: parameters
+    QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,    2,
-    QMetaType::Void,
 
        0        // eod
 };
@@ -75,9 +76,9 @@ void Dialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         Dialog *_t = static_cast<Dialog *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->readSerial(); break;
-        case 1: _t->updateTemperature((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 2: _t->handleButton(); break;
+        case 0: _t->keyReleaseEvent((*reinterpret_cast< QKeyEvent*(*)>(_a[1]))); break;
+        case 1: _t->readSerial(); break;
+        case 2: _t->updateTemperature((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     }

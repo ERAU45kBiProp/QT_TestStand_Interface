@@ -1,6 +1,7 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
+#include <QKeyEvent>
 #include <QDialog>
 #include <QSerialPort>
 #include <QByteArray>
@@ -19,9 +20,9 @@ public:
     ~Dialog();
 
 private slots:
+    void keyReleaseEvent(QKeyEvent *);
     void readSerial();
     void updateTemperature(QString);
-    void handleButton();
 
 private:
     Ui::Dialog *ui;

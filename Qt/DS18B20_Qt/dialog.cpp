@@ -6,6 +6,7 @@
 #include <string>
 #include <QDebug>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 
 Dialog::Dialog(QWidget *parent) :
@@ -18,7 +19,6 @@ Dialog::Dialog(QWidget *parent) :
     serialBuffer = "";
     parsed_data = "";
     temperature_value = 0.0;
-    connect(ui->testButton, SIGNAL (clicked()),this,SLOT (handleButton()));
 
     /*
      *  Testing code, prints the description, vendor id, and product id of all ports.
@@ -62,7 +62,7 @@ Dialog::Dialog(QWidget *parent) :
         qDebug() << "Found the arduino port...\n";
         arduino->setPortName(arduino_uno_port_name);
         arduino->open(QSerialPort::ReadWrite);
-        arduino->setBaudRate(QSerialPort::Baud9600);
+        arduino->setBaudRate(QSerialPort::Baud115200);
         arduino->setDataBits(QSerialPort::Data8);
         arduino->setFlowControl(QSerialPort::NoFlowControl);
         arduino->setParity(QSerialPort::NoParity);
@@ -118,10 +118,98 @@ void Dialog::updateTemperature(QString sensor_reading)
     ui->temp_lcdNumber->display(sensor_reading);
 }
 
-void Dialog::handleButton()
+void Dialog::keyReleaseEvent(QKeyEvent *event)
 {
-    qDebug() << "BUTTON PUSHED ----------------------------------------";
-    ui->testButton->setText("blah");
-    arduino->write("1");
-
+   if(event->key() == Qt::Key_A) //Engine Purge Open
+   {
+       arduino->write("A");
+       ui->EnginePurgeState->setText("OPEN");
+   }
+   if(event->key() == Qt::Key_Z) //Engine Purge Close
+   {
+       arduino->write("Z");
+       ui->EnginePurgeState->setText("CLOSED");
+   }
+   if(event->key() == Qt::Key_S) //LOX Press Open
+   {
+       arduino->write("S");
+       ui->LOXPressState->setText("OPEN");
+   }
+   if(event->key() == Qt::Key_X) //LOX Press Close
+   {
+       arduino->write("X");
+       ui->LOXPressState->setText("CLOSED");
+   }
+   if(event->key() == Qt::Key_D) //LOX Vent Open
+   {
+       arduino->write("D");
+   }
+   if(event->key() == Qt::Key_C) //LOX Vent Close
+   {
+       arduino->write("C");
+   }
+   if(event->key() == Qt::Key_F) //Injector Chill Open
+   {
+       arduino->write("F");
+   }
+   if(event->key() == Qt::Key_V) //Injector Chill Close
+   {
+       arduino->write("V");
+   }
+   if(event->key() == Qt::Key_G) //LOX Main Open
+   {
+       arduino->write("G");
+   }
+   if(event->key() == Qt::Key_B) //LOX Main Close
+   {
+       arduino->write("B");
+   }
+   if(event->key() == Qt::Key_H) //Fuel Press Open
+   {
+       arduino->write("H");
+   }
+   if(event->key() == Qt::Key_N) //Fuel Press Close
+   {
+       arduino->write("N");
+   }
+   if(event->key() == Qt::Key_J) //Fuel Pre-Stage Open
+   {
+       arduino->write("J");
+   }
+   if(event->key() == Qt::Key_M) //Fuel Pre-Stage Close
+   {
+       arduino->write("M");
+   }
+   if(event->key() == Qt::Key_K) //Fuel Main Open
+   {
+       arduino->write("K");
+   }
+   if(event->key() == Qt::Key_Comma) //Fuel Main Close
+   {
+       arduino->write(",");
+   }
+   if(event->key() == Qt::Key_Asterisk) //Prop Inhibit On
+   {
+       arduino->write("8");
+   }
+   if(event->key() == Qt::Key_ParenLeft) //Prop
+   {
+       arduino->write("9");
+   }
+   if(event->key() == Qt::Key_Minus)
+   {
+       arduino->write("-");
+   }
+   if(event->key() == Qt::Key_Equal)
+   {
+       arduino->write("=");
+   }
+   if(event->key() == Qt::Key_Backspace)
+   {
+       arduino->write("[");
+   }
+   if(event->key() == Qt::Key_Backslash)
+   {
+       arduino->write("]");
+   }
 }
