@@ -188,11 +188,11 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
    {
        arduino->write(",");
    }
-   if(event->key() == Qt::Key_Asterisk) //Prop Inhibit On
+   if(event->key() == Qt::Key_8) //Prop Inhibit On
    {
        arduino->write("8");
    }
-   if(event->key() == Qt::Key_ParenLeft) //Prop
+   if(event->key() == Qt::Key_9) //Prop
    {
        arduino->write("9");
    }
