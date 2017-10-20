@@ -411,7 +411,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLCDNumber" name="temp_lcdNumber">
+       <widget class="QLCDNumber" name="temp1_display">
         <property name="palette">
          <palette>
           <active>
@@ -584,7 +584,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLCDNumber" name="temp_lcdNumber_2">
+       <widget class="QLCDNumber" name="temp2_display">
         <property name="palette">
          <palette>
           <active>
@@ -757,7 +757,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLCDNumber" name="temp_lcdNumber_3">
+       <widget class="QLCDNumber" name="pressure1_display">
         <property name="palette">
          <palette>
           <active>
@@ -930,7 +930,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLCDNumber" name="temp_lcdNumber_4">
+       <widget class="QLCDNumber" name="pressure2_display">
         <property name="palette">
          <palette>
           <active>
@@ -1103,7 +1103,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLCDNumber" name="temp_lcdNumber_6">
+       <widget class="QLCDNumber" name="pressure3_display">
         <property name="palette">
          <palette>
           <active>
@@ -1276,7 +1276,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLCDNumber" name="temp_lcdNumber_5">
+       <widget class="QLCDNumber" name="pressure4_display">
         <property name="palette">
          <palette>
           <active>

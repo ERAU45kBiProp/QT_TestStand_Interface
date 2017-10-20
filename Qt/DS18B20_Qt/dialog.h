@@ -22,7 +22,8 @@ public:
 private slots:
     void keyReleaseEvent(QKeyEvent *);
     void readSerial();
-    void updateTemperature(QString);
+    void updateInterface(QStringList);
+    void writeCSV(QByteArray sensor_readings);
 
 private:
     Ui::Dialog *ui;
@@ -31,7 +32,7 @@ private:
     static const quint16 arduino_uno_product_id = 67;
     QByteArray serialData;
     QString serialBuffer;
-    QString parsed_data;
+    QStringList parsed_data;
     double temperature_value;
 };
 
