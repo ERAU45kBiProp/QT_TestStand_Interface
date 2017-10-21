@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'dialog.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.10.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'dialog.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.10.0. It"
+#error "This file was generated using the moc from 5.9.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_Dialog_t {
-    QByteArrayData data[8];
-    char stringdata0[87];
+    QByteArrayData data[7];
+    char stringdata0[71];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,13 +37,11 @@ QT_MOC_LITERAL(2, 23, 0), // ""
 QT_MOC_LITERAL(3, 24, 10), // "QKeyEvent*"
 QT_MOC_LITERAL(4, 35, 10), // "readSerial"
 QT_MOC_LITERAL(5, 46, 15), // "updateInterface"
-QT_MOC_LITERAL(6, 62, 8), // "writeCSV"
-QT_MOC_LITERAL(7, 71, 15) // "sensor_readings"
+QT_MOC_LITERAL(6, 62, 8) // "writeCSV"
 
     },
     "Dialog\0keyReleaseEvent\0\0QKeyEvent*\0"
-    "readSerial\0updateInterface\0writeCSV\0"
-    "sensor_readings"
+    "readSerial\0updateInterface\0writeCSV"
 };
 #undef QT_MOC_LITERAL
 
@@ -70,7 +68,7 @@ static const uint qt_meta_data_Dialog[] = {
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QStringList,    2,
-    QMetaType::Void, QMetaType::QByteArray,    7,
+    QMetaType::Void, QMetaType::QStringList,    2,
 
        0        // eod
 };
@@ -84,7 +82,7 @@ void Dialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 0: _t->keyReleaseEvent((*reinterpret_cast< QKeyEvent*(*)>(_a[1]))); break;
         case 1: _t->readSerial(); break;
         case 2: _t->updateInterface((*reinterpret_cast< QStringList(*)>(_a[1]))); break;
-        case 3: _t->writeCSV((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
+        case 3: _t->writeCSV((*reinterpret_cast< QStringList(*)>(_a[1]))); break;
         default: ;
         }
     }

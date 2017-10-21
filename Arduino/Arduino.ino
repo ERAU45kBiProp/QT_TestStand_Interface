@@ -207,8 +207,8 @@ void loop() {
   pressValue3 = analogRead(PT3);
   pressValue4 = analogRead(PT4);
 
-  //digitalWrite(RS485_DIR_PIN,HIGH);
-  /*mySerial.print(millis());
+  digitalWrite(RS485_DIR_PIN,HIGH);
+  mySerial.print(millis());
   mySerial.print(",");
   mySerial.print(pressValue1);
   mySerial.print(",");
@@ -223,7 +223,7 @@ void loop() {
   mySerial.println(tempValue2);
   mySerial.flush();
   digitalWrite(RS485_DIR_PIN,LOW);
-  */
+  delay(200);
 }
 
 

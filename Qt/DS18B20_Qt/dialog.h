@@ -23,7 +23,7 @@ private slots:
     void keyReleaseEvent(QKeyEvent *);
     void readSerial();
     void updateInterface(QStringList);
-    void writeCSV(QByteArray sensor_readings);
+    void writeCSV(QStringList);
 
 private:
     Ui::Dialog *ui;

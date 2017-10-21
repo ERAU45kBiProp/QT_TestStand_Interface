@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QDateTime>
 
 
 Dialog::Dialog(QWidget *parent) :
@@ -25,7 +26,14 @@ Dialog::Dialog(QWidget *parent) :
     //parsed_data = "";
     temperature_value = 0.0;
 
+    QString current = QDateTime::currentDateTime().toString();
 
+    QFile file("dataOutput.csv");
+    if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
+        QTextStream stream(&file);
+        stream << "DATA CAPTURED " << current << "\n";
+        stream << "Time (ms),P1(0-1024),P2(0-1024),P3(0-1024),P4(0-1024),T1,T2\n";
+    }
      //  Testing code, prints the description, vendor id, and product id of all ports.
      //*//  Used it to determine the values for the arduino uno.
      //*
@@ -103,6 +111,7 @@ void Dialog::readSerial()
         qDebug() << buffer_split << "\n";
         if(buffer_split.length() == 7) {
         Dialog::updateInterface(buffer_split);
+        Dialog::writeCSV(buffer_split);
     }
 
         //serialBuffer = "";
@@ -113,8 +122,6 @@ void Dialog::readSerial()
 
 void Dialog::updateInterface(QStringList sensor_readings)
 {
-    qDebug() << sensor_readings.length() << "\n";
-    //qDebug() << blah[1] << "\n";
     //update the value displayed on the lcdNumber
     ui->pressure1_display->display(sensor_readings[1]);
    ui->pressure2_display->display(sensor_readings[2]);
@@ -125,9 +132,13 @@ void Dialog::updateInterface(QStringList sensor_readings)
 
 }
 
-void Dialog::writeCSV(QByteArray sensor_readings)
+void Dialog::writeCSV(QStringList data)
 {
-
+    QFile file("dataOutput.csv");
+    if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
+        QTextStream stream(&file);
+        stream << data[0] << "," << data[1] <<"," << data[2] << "," << data[3] << "," << data[4] << "," << data[5] << "," <<data[6]<< "\n";
+    }
 }
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)

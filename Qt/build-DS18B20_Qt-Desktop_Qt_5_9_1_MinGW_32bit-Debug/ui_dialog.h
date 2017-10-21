@@ -79,21 +79,31 @@ public:
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QStringLiteral("Dialog"));
         Dialog->resize(800, 600);
+        QFont font;
+        font.setBold(false);
+        font.setWeight(50);
+        Dialog->setFont(font);
         verticalLayoutWidget = new QWidget(Dialog);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(590, 140, 211, 461));
+        verticalLayoutWidget->setGeometry(QRect(510, 90, 273, 461));
         SolenoidStates = new QVBoxLayout(verticalLayoutWidget);
         SolenoidStates->setSpacing(6);
         SolenoidStates->setContentsMargins(11, 11, 11, 11);
         SolenoidStates->setObjectName(QStringLiteral("SolenoidStates"));
+        SolenoidStates->setSizeConstraint(QLayout::SetFixedSize);
         SolenoidStates->setContentsMargins(0, 0, 0, 0);
         StateTitle = new QLabel(verticalLayoutWidget);
         StateTitle->setObjectName(QStringLiteral("StateTitle"));
-        QFont font;
-        font.setPointSize(14);
-        font.setBold(true);
-        font.setWeight(75);
-        StateTitle->setFont(font);
+        QFont font1;
+        font1.setPointSize(14);
+        font1.setBold(true);
+        font1.setItalic(false);
+        font1.setWeight(75);
+        StateTitle->setFont(font1);
+        StateTitle->setAutoFillBackground(false);
+        StateTitle->setFrameShape(QFrame::StyledPanel);
+        StateTitle->setFrameShadow(QFrame::Plain);
+        StateTitle->setTextFormat(Qt::RichText);
         StateTitle->setAlignment(Qt::AlignCenter);
 
         SolenoidStates->addWidget(StateTitle);
@@ -101,11 +111,12 @@ public:
         EnginePurge = new QHBoxLayout();
         EnginePurge->setSpacing(6);
         EnginePurge->setObjectName(QStringLiteral("EnginePurge"));
+        EnginePurge->setSizeConstraint(QLayout::SetFixedSize);
         EnginePurgeLabel = new QLabel(verticalLayoutWidget);
         EnginePurgeLabel->setObjectName(QStringLiteral("EnginePurgeLabel"));
-        QFont font1;
-        font1.setPointSize(12);
-        EnginePurgeLabel->setFont(font1);
+        QFont font2;
+        font2.setPointSize(12);
+        EnginePurgeLabel->setFont(font2);
         EnginePurgeLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         EnginePurge->addWidget(EnginePurgeLabel);
@@ -113,11 +124,11 @@ public:
         EnginePurgeState = new QLabel(verticalLayoutWidget);
         EnginePurgeState->setObjectName(QStringLiteral("EnginePurgeState"));
         EnginePurgeState->setEnabled(true);
-        QFont font2;
-        font2.setPointSize(12);
-        font2.setBold(true);
-        font2.setWeight(75);
-        EnginePurgeState->setFont(font2);
+        QFont font3;
+        font3.setPointSize(12);
+        font3.setBold(true);
+        font3.setWeight(75);
+        EnginePurgeState->setFont(font3);
         EnginePurgeState->setFrameShape(QFrame::Box);
         EnginePurgeState->setFrameShadow(QFrame::Raised);
         EnginePurgeState->setAlignment(Qt::AlignCenter);
@@ -132,14 +143,14 @@ public:
         LOXPress->setObjectName(QStringLiteral("LOXPress"));
         LOXPressLabel = new QLabel(verticalLayoutWidget);
         LOXPressLabel->setObjectName(QStringLiteral("LOXPressLabel"));
-        LOXPressLabel->setFont(font1);
+        LOXPressLabel->setFont(font2);
         LOXPressLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         LOXPress->addWidget(LOXPressLabel);
 
         LOXPressState = new QLabel(verticalLayoutWidget);
         LOXPressState->setObjectName(QStringLiteral("LOXPressState"));
-        LOXPressState->setFont(font2);
+        LOXPressState->setFont(font3);
         LOXPressState->setFrameShape(QFrame::Box);
         LOXPressState->setFrameShadow(QFrame::Raised);
         LOXPressState->setAlignment(Qt::AlignCenter);
@@ -154,14 +165,14 @@ public:
         LOXVent->setObjectName(QStringLiteral("LOXVent"));
         LOXVentLabel = new QLabel(verticalLayoutWidget);
         LOXVentLabel->setObjectName(QStringLiteral("LOXVentLabel"));
-        LOXVentLabel->setFont(font1);
+        LOXVentLabel->setFont(font2);
         LOXVentLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         LOXVent->addWidget(LOXVentLabel);
 
         LOXVentState = new QLabel(verticalLayoutWidget);
         LOXVentState->setObjectName(QStringLiteral("LOXVentState"));
-        LOXVentState->setFont(font2);
+        LOXVentState->setFont(font3);
         LOXVentState->setFrameShape(QFrame::Box);
         LOXVentState->setFrameShadow(QFrame::Raised);
         LOXVentState->setAlignment(Qt::AlignCenter);
@@ -176,14 +187,14 @@ public:
         InjectorChill->setObjectName(QStringLiteral("InjectorChill"));
         InjectorChillLabel = new QLabel(verticalLayoutWidget);
         InjectorChillLabel->setObjectName(QStringLiteral("InjectorChillLabel"));
-        InjectorChillLabel->setFont(font1);
+        InjectorChillLabel->setFont(font2);
         InjectorChillLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         InjectorChill->addWidget(InjectorChillLabel);
 
         InjectorChillState = new QLabel(verticalLayoutWidget);
         InjectorChillState->setObjectName(QStringLiteral("InjectorChillState"));
-        InjectorChillState->setFont(font2);
+        InjectorChillState->setFont(font3);
         InjectorChillState->setFrameShape(QFrame::Box);
         InjectorChillState->setFrameShadow(QFrame::Raised);
         InjectorChillState->setAlignment(Qt::AlignCenter);
@@ -198,14 +209,14 @@ public:
         LOXMain->setObjectName(QStringLiteral("LOXMain"));
         LOXMainLabel = new QLabel(verticalLayoutWidget);
         LOXMainLabel->setObjectName(QStringLiteral("LOXMainLabel"));
-        LOXMainLabel->setFont(font1);
+        LOXMainLabel->setFont(font2);
         LOXMainLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         LOXMain->addWidget(LOXMainLabel);
 
         LOXMainState = new QLabel(verticalLayoutWidget);
         LOXMainState->setObjectName(QStringLiteral("LOXMainState"));
-        LOXMainState->setFont(font2);
+        LOXMainState->setFont(font3);
         LOXMainState->setFrameShape(QFrame::Box);
         LOXMainState->setFrameShadow(QFrame::Raised);
         LOXMainState->setAlignment(Qt::AlignCenter);
@@ -220,14 +231,14 @@ public:
         FuelPress->setObjectName(QStringLiteral("FuelPress"));
         FuelPressLabel = new QLabel(verticalLayoutWidget);
         FuelPressLabel->setObjectName(QStringLiteral("FuelPressLabel"));
-        FuelPressLabel->setFont(font1);
+        FuelPressLabel->setFont(font2);
         FuelPressLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         FuelPress->addWidget(FuelPressLabel);
 
         FuelPressState = new QLabel(verticalLayoutWidget);
         FuelPressState->setObjectName(QStringLiteral("FuelPressState"));
-        FuelPressState->setFont(font2);
+        FuelPressState->setFont(font3);
         FuelPressState->setFrameShape(QFrame::Box);
         FuelPressState->setFrameShadow(QFrame::Raised);
         FuelPressState->setAlignment(Qt::AlignCenter);
@@ -242,14 +253,14 @@ public:
         FuelPre->setObjectName(QStringLiteral("FuelPre"));
         FuelPreLabel = new QLabel(verticalLayoutWidget);
         FuelPreLabel->setObjectName(QStringLiteral("FuelPreLabel"));
-        FuelPreLabel->setFont(font1);
+        FuelPreLabel->setFont(font2);
         FuelPreLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         FuelPre->addWidget(FuelPreLabel);
 
         FuelPreState = new QLabel(verticalLayoutWidget);
         FuelPreState->setObjectName(QStringLiteral("FuelPreState"));
-        FuelPreState->setFont(font2);
+        FuelPreState->setFont(font3);
         FuelPreState->setFrameShape(QFrame::Box);
         FuelPreState->setFrameShadow(QFrame::Raised);
         FuelPreState->setAlignment(Qt::AlignCenter);
@@ -264,14 +275,14 @@ public:
         FuelMain->setObjectName(QStringLiteral("FuelMain"));
         FuelMainLabel = new QLabel(verticalLayoutWidget);
         FuelMainLabel->setObjectName(QStringLiteral("FuelMainLabel"));
-        FuelMainLabel->setFont(font1);
+        FuelMainLabel->setFont(font2);
         FuelMainLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         FuelMain->addWidget(FuelMainLabel);
 
         FuelMainState = new QLabel(verticalLayoutWidget);
         FuelMainState->setObjectName(QStringLiteral("FuelMainState"));
-        FuelMainState->setFont(font2);
+        FuelMainState->setFont(font3);
         FuelMainState->setFrameShape(QFrame::Box);
         FuelMainState->setFrameShadow(QFrame::Raised);
         FuelMainState->setAlignment(Qt::AlignCenter);
@@ -294,11 +305,11 @@ public:
         Thermocouple1->setObjectName(QStringLiteral("Thermocouple1"));
         temp_label = new QLabel(layoutWidget);
         temp_label->setObjectName(QStringLiteral("temp_label"));
-        QFont font3;
-        font3.setPointSize(10);
-        font3.setBold(true);
-        font3.setWeight(75);
-        temp_label->setFont(font3);
+        QFont font4;
+        font4.setPointSize(10);
+        font4.setBold(true);
+        font4.setWeight(75);
+        temp_label->setFont(font4);
         temp_label->setAlignment(Qt::AlignCenter);
 
         Thermocouple1->addWidget(temp_label);
@@ -342,7 +353,7 @@ public:
         Thermocouple2->setObjectName(QStringLiteral("Thermocouple2"));
         temp_label_2 = new QLabel(layoutWidget);
         temp_label_2->setObjectName(QStringLiteral("temp_label_2"));
-        temp_label_2->setFont(font3);
+        temp_label_2->setFont(font4);
         temp_label_2->setAlignment(Qt::AlignCenter);
 
         Thermocouple2->addWidget(temp_label_2);
@@ -378,7 +389,7 @@ public:
         OxTankPressure->setObjectName(QStringLiteral("OxTankPressure"));
         temp_label_3 = new QLabel(layoutWidget);
         temp_label_3->setObjectName(QStringLiteral("temp_label_3"));
-        temp_label_3->setFont(font3);
+        temp_label_3->setFont(font4);
         temp_label_3->setAlignment(Qt::AlignCenter);
 
         OxTankPressure->addWidget(temp_label_3);
@@ -414,7 +425,7 @@ public:
         FuelTankPressure->setObjectName(QStringLiteral("FuelTankPressure"));
         temp_label_4 = new QLabel(layoutWidget);
         temp_label_4->setObjectName(QStringLiteral("temp_label_4"));
-        temp_label_4->setFont(font3);
+        temp_label_4->setFont(font4);
         temp_label_4->setAlignment(Qt::AlignCenter);
 
         FuelTankPressure->addWidget(temp_label_4);
@@ -450,7 +461,7 @@ public:
         OxPressure->setObjectName(QStringLiteral("OxPressure"));
         temp_label_6 = new QLabel(layoutWidget);
         temp_label_6->setObjectName(QStringLiteral("temp_label_6"));
-        temp_label_6->setFont(font3);
+        temp_label_6->setFont(font4);
         temp_label_6->setAlignment(Qt::AlignCenter);
 
         OxPressure->addWidget(temp_label_6);
@@ -486,7 +497,7 @@ public:
         FuelPressure->setObjectName(QStringLiteral("FuelPressure"));
         temp_label_5 = new QLabel(layoutWidget);
         temp_label_5->setObjectName(QStringLiteral("temp_label_5"));
-        temp_label_5->setFont(font3);
+        temp_label_5->setFont(font4);
         temp_label_5->setAlignment(Qt::AlignCenter);
 
         FuelPressure->addWidget(temp_label_5);
