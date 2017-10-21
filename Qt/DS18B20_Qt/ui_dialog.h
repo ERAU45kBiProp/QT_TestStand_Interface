@@ -57,22 +57,22 @@ public:
     QVBoxLayout *verticalLayout;
     QHBoxLayout *Thermocouple1;
     QLabel *temp_label;
-    QLCDNumber *temp_lcdNumber;
+    QLCDNumber *temp1_display;
     QHBoxLayout *Thermocouple2;
     QLabel *temp_label_2;
-    QLCDNumber *temp_lcdNumber_2;
+    QLCDNumber *temp2_display;
     QHBoxLayout *OxTankPressure;
     QLabel *temp_label_3;
-    QLCDNumber *temp_lcdNumber_3;
+    QLCDNumber *pressure1_display;
     QHBoxLayout *FuelTankPressure;
     QLabel *temp_label_4;
-    QLCDNumber *temp_lcdNumber_4;
+    QLCDNumber *pressure2_display;
     QHBoxLayout *OxPressure;
     QLabel *temp_label_6;
-    QLCDNumber *temp_lcdNumber_6;
+    QLCDNumber *pressure3_display;
     QHBoxLayout *FuelPressure;
     QLabel *temp_label_5;
-    QLCDNumber *temp_lcdNumber_5;
+    QLCDNumber *pressure4_display;
 
     void setupUi(QDialog *Dialog)
     {
@@ -303,8 +303,8 @@ public:
 
         Thermocouple1->addWidget(temp_label);
 
-        temp_lcdNumber = new QLCDNumber(layoutWidget);
-        temp_lcdNumber->setObjectName(QStringLiteral("temp_lcdNumber"));
+        temp1_display = new QLCDNumber(layoutWidget);
+        temp1_display->setObjectName(QStringLiteral("temp1_display"));
         QPalette palette;
         QBrush brush(QColor(0, 0, 94, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -329,10 +329,10 @@ public:
         palette.setBrush(QPalette::Disabled, QPalette::Dark, brush);
         palette.setBrush(QPalette::Disabled, QPalette::Text, brush);
         palette.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        temp_lcdNumber->setPalette(palette);
-        temp_lcdNumber->setDigitCount(7);
+        temp1_display->setPalette(palette);
+        temp1_display->setDigitCount(7);
 
-        Thermocouple1->addWidget(temp_lcdNumber);
+        Thermocouple1->addWidget(temp1_display);
 
 
         verticalLayout->addLayout(Thermocouple1);
@@ -347,8 +347,8 @@ public:
 
         Thermocouple2->addWidget(temp_label_2);
 
-        temp_lcdNumber_2 = new QLCDNumber(layoutWidget);
-        temp_lcdNumber_2->setObjectName(QStringLiteral("temp_lcdNumber_2"));
+        temp2_display = new QLCDNumber(layoutWidget);
+        temp2_display->setObjectName(QStringLiteral("temp2_display"));
         QPalette palette1;
         palette1.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette1.setBrush(QPalette::Active, QPalette::Light, brush1);
@@ -365,10 +365,10 @@ public:
         palette1.setBrush(QPalette::Disabled, QPalette::Dark, brush);
         palette1.setBrush(QPalette::Disabled, QPalette::Text, brush);
         palette1.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        temp_lcdNumber_2->setPalette(palette1);
-        temp_lcdNumber_2->setDigitCount(7);
+        temp2_display->setPalette(palette1);
+        temp2_display->setDigitCount(7);
 
-        Thermocouple2->addWidget(temp_lcdNumber_2);
+        Thermocouple2->addWidget(temp2_display);
 
 
         verticalLayout->addLayout(Thermocouple2);
@@ -383,8 +383,8 @@ public:
 
         OxTankPressure->addWidget(temp_label_3);
 
-        temp_lcdNumber_3 = new QLCDNumber(layoutWidget);
-        temp_lcdNumber_3->setObjectName(QStringLiteral("temp_lcdNumber_3"));
+        pressure1_display = new QLCDNumber(layoutWidget);
+        pressure1_display->setObjectName(QStringLiteral("pressure1_display"));
         QPalette palette2;
         palette2.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette2.setBrush(QPalette::Active, QPalette::Light, brush1);
@@ -401,10 +401,10 @@ public:
         palette2.setBrush(QPalette::Disabled, QPalette::Dark, brush);
         palette2.setBrush(QPalette::Disabled, QPalette::Text, brush);
         palette2.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        temp_lcdNumber_3->setPalette(palette2);
-        temp_lcdNumber_3->setDigitCount(7);
+        pressure1_display->setPalette(palette2);
+        pressure1_display->setDigitCount(7);
 
-        OxTankPressure->addWidget(temp_lcdNumber_3);
+        OxTankPressure->addWidget(pressure1_display);
 
 
         verticalLayout->addLayout(OxTankPressure);
@@ -419,8 +419,8 @@ public:
 
         FuelTankPressure->addWidget(temp_label_4);
 
-        temp_lcdNumber_4 = new QLCDNumber(layoutWidget);
-        temp_lcdNumber_4->setObjectName(QStringLiteral("temp_lcdNumber_4"));
+        pressure2_display = new QLCDNumber(layoutWidget);
+        pressure2_display->setObjectName(QStringLiteral("pressure2_display"));
         QPalette palette3;
         palette3.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette3.setBrush(QPalette::Active, QPalette::Light, brush1);
@@ -437,10 +437,10 @@ public:
         palette3.setBrush(QPalette::Disabled, QPalette::Dark, brush);
         palette3.setBrush(QPalette::Disabled, QPalette::Text, brush);
         palette3.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        temp_lcdNumber_4->setPalette(palette3);
-        temp_lcdNumber_4->setDigitCount(7);
+        pressure2_display->setPalette(palette3);
+        pressure2_display->setDigitCount(7);
 
-        FuelTankPressure->addWidget(temp_lcdNumber_4);
+        FuelTankPressure->addWidget(pressure2_display);
 
 
         verticalLayout->addLayout(FuelTankPressure);
@@ -455,8 +455,8 @@ public:
 
         OxPressure->addWidget(temp_label_6);
 
-        temp_lcdNumber_6 = new QLCDNumber(layoutWidget);
-        temp_lcdNumber_6->setObjectName(QStringLiteral("temp_lcdNumber_6"));
+        pressure3_display = new QLCDNumber(layoutWidget);
+        pressure3_display->setObjectName(QStringLiteral("pressure3_display"));
         QPalette palette4;
         palette4.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette4.setBrush(QPalette::Active, QPalette::Light, brush1);
@@ -473,10 +473,10 @@ public:
         palette4.setBrush(QPalette::Disabled, QPalette::Dark, brush);
         palette4.setBrush(QPalette::Disabled, QPalette::Text, brush);
         palette4.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        temp_lcdNumber_6->setPalette(palette4);
-        temp_lcdNumber_6->setDigitCount(7);
+        pressure3_display->setPalette(palette4);
+        pressure3_display->setDigitCount(7);
 
-        OxPressure->addWidget(temp_lcdNumber_6);
+        OxPressure->addWidget(pressure3_display);
 
 
         verticalLayout->addLayout(OxPressure);
@@ -491,8 +491,8 @@ public:
 
         FuelPressure->addWidget(temp_label_5);
 
-        temp_lcdNumber_5 = new QLCDNumber(layoutWidget);
-        temp_lcdNumber_5->setObjectName(QStringLiteral("temp_lcdNumber_5"));
+        pressure4_display = new QLCDNumber(layoutWidget);
+        pressure4_display->setObjectName(QStringLiteral("pressure4_display"));
         QPalette palette5;
         palette5.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette5.setBrush(QPalette::Active, QPalette::Light, brush1);
@@ -509,10 +509,10 @@ public:
         palette5.setBrush(QPalette::Disabled, QPalette::Dark, brush);
         palette5.setBrush(QPalette::Disabled, QPalette::Text, brush);
         palette5.setBrush(QPalette::Disabled, QPalette::ButtonText, brush);
-        temp_lcdNumber_5->setPalette(palette5);
-        temp_lcdNumber_5->setDigitCount(7);
+        pressure4_display->setPalette(palette5);
+        pressure4_display->setDigitCount(7);
 
-        FuelPressure->addWidget(temp_lcdNumber_5);
+        FuelPressure->addWidget(pressure4_display);
 
 
         verticalLayout->addLayout(FuelPressure);

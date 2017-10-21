@@ -14,10 +14,10 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
-    ui->temp_lcdNumber->display("-------");
+    ui->temp1_display->display("-------");
     arduino = new QSerialPort(this);
     serialBuffer = "";
-    parsed_data = "";
+    //parsed_data = "";
     temperature_value = 0.0;
 
     /*
@@ -90,32 +90,36 @@ void Dialog::readSerial()
      *
      */
     QStringList buffer_split = serialBuffer.split(","); //  split the serialBuffer string, parsing with ',' as the separator
-
-    //  Check to see if there less than 3 tokens in buffer_split.
-    //  If there are at least 3 then this means there were 2 commas,
-    //  means there is a parsed temperature value as the second token (between 2 commas)
-    if(buffer_split.length() < 3){
-        // no parsed value yet so continue accumulating bytes from serial in the buffer.
-        serialData = arduino->readAll();
-        serialBuffer = serialBuffer + QString::fromStdString(serialData.toStdString());
-        serialData.clear();
-    }else{
-        // the second element of buffer_split is parsed correctly, update the temperature value on temp_lcdNumber
-        serialBuffer = "";
+    if (arduino->canReadLine()){
+        serialData = arduino->readLine();
+        serialData = serialData.trimmed();
+        serialBuffer = QString::fromStdString(serialData.toStdString());
+        buffer_split = serialBuffer.split(",");
+        Dialog::updateInterface(buffer_split);
         qDebug() << buffer_split << "\n";
-        parsed_data = buffer_split[1];
-        temperature_value = parsed_data.toDouble(); // convert to fahrenheit
-        qDebug() << "Temperature: " << temperature_value << "\n";
-        parsed_data = QString::number(temperature_value, 'g', 4); // format precision of temperature_value to 4 digits or fewer
-        Dialog::updateTemperature(parsed_data);
+        //serialBuffer = "";
+        serialData.clear();
     }
 
 }
 
-void Dialog::updateTemperature(QString sensor_reading)
+void Dialog::updateInterface(QStringList sensor_readings)
 {
-    //  update the value displayed on the lcdNumber
-    ui->temp_lcdNumber->display(sensor_reading);
+    //qDebug() << sensor_readings << "\n";
+    //qDebug() << blah[1] << "\n";
+    //update the value displayed on the lcdNumber
+    ui->pressure1_display->display(sensor_readings[1]);
+   ui->pressure2_display->display(sensor_readings[2]);
+    ui->pressure3_display->display(sensor_readings[3]);
+    ui->pressure4_display->display(sensor_readings[4]);
+    ui->temp1_display->display(sensor_readings[5]);
+    ui->temp2_display->display(sensor_readings[6]);
+
+}
+
+void Dialog::writeCSV(QByteArray sensor_readings)
+{
+
 }
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)
@@ -188,11 +192,11 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
    {
        arduino->write(",");
    }
-   if(event->key() == Qt::Key_Asterisk) //Prop Inhibit On
+   if(event->key() == Qt::Key_8) //Prop Inhibit On
    {
        arduino->write("8");
    }
-   if(event->key() == Qt::Key_ParenLeft) //Prop
+   if(event->key() == Qt::Key_9) //Prop
    {
        arduino->write("9");
    }
