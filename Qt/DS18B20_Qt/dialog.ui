@@ -95,7 +95,7 @@
          </font>
         </property>
         <property name="text">
-         <string>LOX Press:</string>
+         <string>LOX Press</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -202,7 +202,7 @@
          <enum>QFrame::Raised</enum>
         </property>
         <property name="text">
-         <string>CLOSED</string>
+         <string>INHIBIT</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -244,7 +244,7 @@
          <enum>QFrame::Raised</enum>
         </property>
         <property name="text">
-         <string>CLOSED</string>
+         <string>INHIBIT</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -328,7 +328,7 @@
          <enum>QFrame::Raised</enum>
         </property>
         <property name="text">
-         <string>CLOSED</string>
+         <string>INHIBIT</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -370,7 +370,7 @@
          <enum>QFrame::Raised</enum>
         </property>
         <property name="text">
-         <string>CLOSED</string>
+         <string>INHIBIT</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

@@ -1,15 +1,15 @@
-double x = 0;
+
 char incomingChar;
 int incomingInt;
-
-const byte purgeOutput = 2;
-const byte loxPressOutput = 3;
-const byte loxVentOutput = 4;
-const byte injectorChillOutput = 5;
-const byte loxMainOutput = 6;
-const byte fuelPressOutput = 7;
-const byte fuelPreStageOutput = 8;
-const byte fuelMainOutput = 9;
+#include <SoftwareSerial.h>
+const byte purgeOutput = 5;
+const byte loxPressOutput = 6;
+const byte loxVentOutput = 7;
+const byte injectorChillOutput = 8;
+const byte loxMainOutput = 9;
+const byte fuelPressOutput = 10;
+const byte fuelPreStageOutput = 11;
+const byte fuelMainOutput = 12;
 
 const int PT1 = A0;
 const int PT2 = A1;
@@ -23,6 +23,9 @@ boolean mainStageFlag = false;
 boolean shutdownFlag = false;
 boolean purgeFlag = false;
 boolean operatingFlag = false;
+
+#define RS485_DIR_PIN       4
+
 long timer1 = 0;
 
 int pressValue1 = 0;
@@ -33,11 +36,14 @@ int pressValue4 = 0;
 int tempValue1 = 0;
 int tempValue2 = 0;
 
+SoftwareSerial mySerial(2,3);
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-
   
+  pinMode(RS485_DIR_PIN, OUTPUT);
+  digitalWrite(RS485_DIR_PIN,LOW);
+  mySerial.begin(115200);
+  Serial.begin(9600);
+  Serial.println("Starting...");
   pinMode(purgeOutput, OUTPUT);
   pinMode(loxPressOutput, OUTPUT);
   pinMode(loxVentOutput, OUTPUT);
@@ -59,10 +65,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
-  if (Serial.available() > 0) {
-    incomingInt = Serial.read();
+  if (mySerial.available()) {
+    incomingInt = mySerial.read();
     //incomingInt = incomingChar - '0';
+    Serial.println(incomingInt);
     if (!operatingFlag) {
       switch (incomingInt)
       {
@@ -201,22 +207,23 @@ void loop() {
   pressValue3 = analogRead(PT3);
   pressValue4 = analogRead(PT4);
 
-  
-  Serial.print(millis());
-  Serial.print(",");
-  Serial.print(pressValue1);
-  Serial.print(",");
-  Serial.print(pressValue2);
-  Serial.print(",");
-  Serial.print(pressValue3);
-  Serial.print(",");
-  Serial.print(pressValue4);
-  Serial.print(",");
-  Serial.print(tempValue1);
-  Serial.print(",");
-  Serial.println(tempValue2);
-  Serial.flush();
-  delay(100);
+  //digitalWrite(RS485_DIR_PIN,HIGH);
+  /*mySerial.print(millis());
+  mySerial.print(",");
+  mySerial.print(pressValue1);
+  mySerial.print(",");
+  mySerial.print(pressValue2);
+  mySerial.print(",");
+  mySerial.print(pressValue3);
+  mySerial.print(",");
+  mySerial.print(pressValue4);
+  mySerial.print(",");
+  mySerial.print(tempValue1);
+  mySerial.print(",");
+  mySerial.println(tempValue2);
+  mySerial.flush();
+  digitalWrite(RS485_DIR_PIN,LOW);
+  */
 }
 
 

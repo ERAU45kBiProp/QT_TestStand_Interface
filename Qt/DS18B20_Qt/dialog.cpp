@@ -15,16 +15,21 @@ Dialog::Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->temp1_display->display("-------");
+    ui->temp2_display->display("-------");
+    ui->FuelPreState->setText("INHIBIT");
+    ui->LOXMainState->setText("INHIBIT");
+    ui->InjectorChillState->setText("INHIBIT");
+    ui->FuelMainState->setText("INHIBIT");
     arduino = new QSerialPort(this);
     serialBuffer = "";
     //parsed_data = "";
     temperature_value = 0.0;
 
-    /*
-     *  Testing code, prints the description, vendor id, and product id of all ports.
-     *  Used it to determine the values for the arduino uno.
-     *
-     *
+
+     //  Testing code, prints the description, vendor id, and product id of all ports.
+     //*//  Used it to determine the values for the arduino uno.
+     //*
+     //*
     qDebug() << "Number of ports: " << QSerialPortInfo::availablePorts().length() << "\n";
     foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
         qDebug() << "Description: " << serialPortInfo.description() << "\n";
@@ -33,7 +38,7 @@ Dialog::Dialog(QWidget *parent) :
         qDebug() << "Has product id?: " << serialPortInfo.hasProductIdentifier() << "\n";
         qDebug() << "Product ID: " << serialPortInfo.productIdentifier() << "\n";
     }
-    */
+
 
 
     /*
@@ -95,8 +100,11 @@ void Dialog::readSerial()
         serialData = serialData.trimmed();
         serialBuffer = QString::fromStdString(serialData.toStdString());
         buffer_split = serialBuffer.split(",");
-        Dialog::updateInterface(buffer_split);
         qDebug() << buffer_split << "\n";
+        if(buffer_split.length() == 7) {
+        Dialog::updateInterface(buffer_split);
+    }
+
         //serialBuffer = "";
         serialData.clear();
     }
@@ -105,7 +113,7 @@ void Dialog::readSerial()
 
 void Dialog::updateInterface(QStringList sensor_readings)
 {
-    //qDebug() << sensor_readings << "\n";
+    qDebug() << sensor_readings.length() << "\n";
     //qDebug() << blah[1] << "\n";
     //update the value displayed on the lcdNumber
     ui->pressure1_display->display(sensor_readings[1]);
@@ -129,90 +137,126 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
        arduino->write("A");
        ui->EnginePurgeState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_Z) //Engine Purge Close
+   else if(event->key() == Qt::Key_Z) //Engine Purge Close
    {
        arduino->write("Z");
        ui->EnginePurgeState->setText("CLOSED");
    }
-   if(event->key() == Qt::Key_S) //LOX Press Open
+   else if(event->key() == Qt::Key_S) //LOX Press Open
    {
        arduino->write("S");
        ui->LOXPressState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_X) //LOX Press Close
+   else if(event->key() == Qt::Key_X) //LOX Press Close
    {
        arduino->write("X");
        ui->LOXPressState->setText("CLOSED");
    }
-   if(event->key() == Qt::Key_D) //LOX Vent Open
+   else if(event->key() == Qt::Key_D) //LOX Vent Open
    {
        arduino->write("D");
+       ui->LOXVentState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_C) //LOX Vent Close
+   else if(event->key() == Qt::Key_C) //LOX Vent Close
    {
        arduino->write("C");
+       ui->LOXVentState->setText("CLOSED");
    }
-   if(event->key() == Qt::Key_F) //Injector Chill Open
+   else if(event->key() == Qt::Key_F && !propFlowInhibit) //Injector Chill Open
    {
        arduino->write("F");
+       ui->InjectorChillState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_V) //Injector Chill Close
+   else if(event->key() == Qt::Key_V) //Injector Chill Close
    {
        arduino->write("V");
+       if (!propFlowInhibit) {
+       ui->InjectorChillState->setText("CLOSED");
+       }
    }
-   if(event->key() == Qt::Key_G) //LOX Main Open
+   else if(event->key() == Qt::Key_G && !propFlowInhibit) //LOX Main Open
    {
        arduino->write("G");
+       ui->LOXMainState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_B) //LOX Main Close
+   else if(event->key() == Qt::Key_B) //LOX Main Close
    {
        arduino->write("B");
+       if (!propFlowInhibit) {
+       ui->LOXMainState->setText("CLOSED");
+       }
    }
-   if(event->key() == Qt::Key_H) //Fuel Press Open
+   else if(event->key() == Qt::Key_H) //Fuel Press Open
    {
        arduino->write("H");
+       ui->FuelPressState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_N) //Fuel Press Close
+   else if(event->key() == Qt::Key_N) //Fuel Press Close
    {
        arduino->write("N");
+       ui->FuelPressState->setText("CLOSED");
    }
-   if(event->key() == Qt::Key_J) //Fuel Pre-Stage Open
+   else if(event->key() == Qt::Key_J && !propFlowInhibit) //Fuel Pre-Stage Open
    {
        arduino->write("J");
+       ui->FuelPreState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_M) //Fuel Pre-Stage Close
+   else if(event->key() == Qt::Key_M) //Fuel Pre-Stage Close
    {
        arduino->write("M");
+       if (!propFlowInhibit) {
+       ui->FuelPreState->setText("CLOSED");
+       }
    }
-   if(event->key() == Qt::Key_K) //Fuel Main Open
+   else if(event->key() == Qt::Key_K && !propFlowInhibit) //Fuel Main Open
    {
        arduino->write("K");
+       ui->FuelMainState->setText("OPEN");
    }
-   if(event->key() == Qt::Key_Comma) //Fuel Main Close
+   else if(event->key() == Qt::Key_Comma) //Fuel Main Close
    {
        arduino->write(",");
+       if (!propFlowInhibit) {
+       ui->FuelMainState->setText("CLOSED");
+       }
    }
-   if(event->key() == Qt::Key_8) //Prop Inhibit On
+   else if(event->key() == Qt::Key_8) //Prop Inhibit On
    {
        arduino->write("8");
+       propFlowInhibit = true;
+       arduino->write(",");
+       ui->FuelPreState->setText("INHIBIT");
+       arduino->write("M");
+       ui->LOXMainState->setText("INHIBIT");
+       arduino->write("B");
+       ui->InjectorChillState->setText("INHIBIT");
+       arduino->write("V");
+       ui->FuelMainState->setText("INHIBIT");
+
    }
-   if(event->key() == Qt::Key_9) //Prop
+   else if(event->key() == Qt::Key_9) //Prop Inhibit Off
    {
        arduino->write("9");
+       propFlowInhibit = false;
+
+       ui->FuelPreState->setText("CLOSED");
+       ui->LOXMainState->setText("CLOSED");
+       ui->InjectorChillState->setText("CLOSED");
+       ui->FuelMainState->setText("CLOSED");
    }
-   if(event->key() == Qt::Key_Minus)
+   else if(event->key() == Qt::Key_Minus) //PreStage
    {
        arduino->write("-");
    }
-   if(event->key() == Qt::Key_Equal)
+   else if(event->key() == Qt::Key_Equal) //Main Stage
    {
        arduino->write("=");
    }
-   if(event->key() == Qt::Key_Backspace)
+   else if(event->key() == Qt::Key_Backslash) //Shutdown
    {
        arduino->write("[");
    }
-   if(event->key() == Qt::Key_Backslash)
+   else if(event->key() == Qt::Key_BracketRight) //Purge
    {
        arduino->write("]");
    }
