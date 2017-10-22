@@ -26,14 +26,7 @@ Dialog::Dialog(QWidget *parent) :
     //parsed_data = "";
     temperature_value = 0.0;
 
-    QString current = QDateTime::currentDateTime().toString();
 
-    QFile file("dataOutput.csv");
-    if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
-        QTextStream stream(&file);
-        stream << "DATA CAPTURED " << current << "\n";
-        stream << "Time (ms),P1(0-1024),P2(0-1024),P3(0-1024),P4(0-1024),T1,T2\n";
-    }
      //  Testing code, prints the description, vendor id, and product id of all ports.
      //*//  Used it to determine the values for the arduino uno.
      //*
@@ -75,7 +68,7 @@ Dialog::Dialog(QWidget *parent) :
         qDebug() << "Found the arduino port...\n";
         arduino->setPortName(arduino_uno_port_name);
         arduino->open(QSerialPort::ReadWrite);
-        arduino->setBaudRate(QSerialPort::Baud115200);
+        arduino->setBaudRate(QSerialPort::Baud19200);
         arduino->setDataBits(QSerialPort::Data8);
         arduino->setFlowControl(QSerialPort::NoFlowControl);
         arduino->setParity(QSerialPort::NoParity);
@@ -111,7 +104,9 @@ void Dialog::readSerial()
         qDebug() << buffer_split << "\n";
         if(buffer_split.length() == 7) {
         Dialog::updateInterface(buffer_split);
+        if (recordingState) {
         Dialog::writeCSV(buffer_split);
+        }
     }
 
         //serialBuffer = "";
@@ -134,7 +129,7 @@ void Dialog::updateInterface(QStringList sensor_readings)
 
 void Dialog::writeCSV(QStringList data)
 {
-    QFile file("dataOutput.csv");
+    QFile file(fileName);
     if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
         QTextStream stream(&file);
         stream << data[0] << "," << data[1] <<"," << data[2] << "," << data[3] << "," << data[4] << "," << data[5] << "," <<data[6]<< "\n";
@@ -270,5 +265,25 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
    else if(event->key() == Qt::Key_BracketRight) //Purge
    {
        arduino->write("]");
+   }
+   else if(event->key() == Qt::Key_R) //Toggle data collection
+   {
+       recordingState = !recordingState;
+               if (recordingState) {
+                   arduino->write("R");
+        ui->recordingLabel->setText("RECORDING: ON");
+                QString nameString = QDateTime::currentDateTime().toString("MM.dd.yyyy.hh.mm.ss");
+               fileName = "Data." + nameString + ".csv";
+                qDebug() << fileName << "\n";
+               QFile file(fileName);
+               if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
+                   QTextStream stream(&file);
+                   stream << "Time (ms),P1(psi),P2(psi),P3(psi),P4(psi),T1,T2\n\n";
+               }
+   }
+               else {
+               ui->recordingLabel->setText("RECORDING: OFF");
+
+   }
    }
 }

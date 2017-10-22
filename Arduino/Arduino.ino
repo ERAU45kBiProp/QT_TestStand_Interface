@@ -15,6 +15,7 @@ const int PT1 = A0;
 const int PT2 = A1;
 const int PT3 = A2;
 const int PT4 = A3;
+const int timeDelay = 1000;
 
 
 boolean propFlowInhibit = true;
@@ -27,21 +28,23 @@ boolean operatingFlag = false;
 #define RS485_DIR_PIN       4
 
 long timer1 = 0;
+long timer2 = 0;
+long timer3 = 0;
+float timerValue = 0;
 
-int pressValue1 = 0;
-int pressValue2 = 0;
-int pressValue3 = 0;
-int pressValue4 = 0;
+float pressValue1 = 0;
+float pressValue2 = 0;
+float pressValue3 = 0;
+float pressValue4 = 0;
 
 int tempValue1 = 0;
 int tempValue2 = 0;
 
 SoftwareSerial mySerial(2,3);
 void setup() {
-  
   pinMode(RS485_DIR_PIN, OUTPUT);
   digitalWrite(RS485_DIR_PIN,LOW);
-  mySerial.begin(115200);
+  mySerial.begin(19200);
   Serial.begin(9600);
   Serial.println("Starting...");
   pinMode(purgeOutput, OUTPUT);
@@ -158,6 +161,9 @@ void loop() {
           digitalWrite(purgeOutput, LOW);
           timer1 = millis();
           break;
+        case 82: //Record start
+          timer2 = millis();
+          break;
         default:
           break;
       }
@@ -202,28 +208,38 @@ void loop() {
     }
   }
 
-  pressValue1 = analogRead(PT1);
-  pressValue2 = analogRead(PT2);
-  pressValue3 = analogRead(PT3);
-  pressValue4 = analogRead(PT4);
+  pressValue1 = float(analogRead(PT1))*5/1024*124.724 - 58.461;
+  pressValue2 = float(analogRead(PT2))*5/1024;
+  pressValue3 = float(analogRead(PT3))*5/1024*124.724 - 58.461;
+  pressValue4 = float(analogRead(PT4))*5/1024;
 
+  if (millis() - timer3 > timeDelay){
+  timer3 = millis();
   digitalWrite(RS485_DIR_PIN,HIGH);
-  mySerial.print(millis());
+  timerValue = float(millis() - timer2)/1000;
+  mySerial.print("-");
+  //mySerial.print(timerValue,3);
   mySerial.print(",");
-  mySerial.print(pressValue1);
+  mySerial.print("-");
+  //mySerial.print(pressValue1,2);
   mySerial.print(",");
-  mySerial.print(pressValue2);
+  //mySerial.print(pressValue2,2);
+  mySerial.print("-");
   mySerial.print(",");
-  mySerial.print(pressValue3);
+  mySerial.print("-");
+  //mySerial.print(pressValue3,2);
   mySerial.print(",");
-  mySerial.print(pressValue4);
+  //mySerial.print(pressValue4,2);
+  mySerial.print("-");
   mySerial.print(",");
-  mySerial.print(tempValue1);
+  //mySerial.print(tempValue1);
+  mySerial.print("-");
   mySerial.print(",");
-  mySerial.println(tempValue2);
+  //mySerial.println(tempValue2);
+  mySerial.println("-");
   mySerial.flush();
   digitalWrite(RS485_DIR_PIN,LOW);
-  delay(200);
+  }
 }
 
 

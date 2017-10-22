@@ -31,9 +31,11 @@ private:
     static const quint16 arduino_uno_vendor_id = 1027;
     static const quint16 arduino_uno_product_id = 24577;
     bool propFlowInhibit = true;
+    bool recordingState = false;
     QByteArray serialData;
     QString serialBuffer;
     QStringList parsed_data;
+    QString fileName;
     double temperature_value;
 };
 
