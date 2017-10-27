@@ -15,8 +15,9 @@ const int PT1 = A0;
 const int PT2 = A1;
 const int PT3 = A2;
 const int PT4 = A3;
-const int timeDelay = 1000;
+const int timeDelay = 20;
 
+const int TX_ENABLE = 4;
 
 boolean propFlowInhibit = true;
 boolean preStageFlag = false;
@@ -25,7 +26,6 @@ boolean shutdownFlag = false;
 boolean purgeFlag = false;
 boolean operatingFlag = false;
 
-#define RS485_DIR_PIN       4
 
 long timer1 = 0;
 long timer2 = 0;
@@ -42,11 +42,11 @@ int tempValue2 = 0;
 
 SoftwareSerial mySerial(2,3);
 void setup() {
-  pinMode(RS485_DIR_PIN, OUTPUT);
-  digitalWrite(RS485_DIR_PIN,LOW);
-  mySerial.begin(19200);
+  mySerial.begin(115200);
   Serial.begin(9600);
   Serial.println("Starting...");
+
+  pinMode(TX_ENABLE, OUTPUT);
   pinMode(purgeOutput, OUTPUT);
   pinMode(loxPressOutput, OUTPUT);
   pinMode(loxVentOutput, OUTPUT);
@@ -56,6 +56,7 @@ void setup() {
   pinMode(fuelPreStageOutput, OUTPUT);
   pinMode(fuelMainOutput, OUTPUT);
 
+  digitalWrite(TX_ENABLE, LOW);
   digitalWrite(purgeOutput, HIGH);
   digitalWrite(loxPressOutput, HIGH);
   digitalWrite(loxVentOutput, HIGH);
@@ -213,32 +214,34 @@ void loop() {
   pressValue3 = float(analogRead(PT3))*5/1024*124.724 - 58.461;
   pressValue4 = float(analogRead(PT4))*5/1024;
 
-  if (millis() - timer3 > timeDelay){
+  if (((millis() - timer3) > timeDelay) && !mySerial.available() ){
+  digitalWrite(TX_ENABLE,HIGH);
+  mySerial.write(0x13);
   timer3 = millis();
-  digitalWrite(RS485_DIR_PIN,HIGH);
   timerValue = float(millis() - timer2)/1000;
-  mySerial.print("-");
-  //mySerial.print(timerValue,3);
+  //mySerial.write("-");
+  mySerial.print(millis());
   mySerial.print(",");
-  mySerial.print("-");
-  //mySerial.print(pressValue1,2);
+  //mySerial.write("-");
+  mySerial.print(pressValue1,2);
   mySerial.print(",");
-  //mySerial.print(pressValue2,2);
-  mySerial.print("-");
+  mySerial.print(pressValue2,2);
+  //mySerial.write("-");
   mySerial.print(",");
-  mySerial.print("-");
-  //mySerial.print(pressValue3,2);
+  //mySerial.write("-");
+  mySerial.print(pressValue3,2);
   mySerial.print(",");
-  //mySerial.print(pressValue4,2);
-  mySerial.print("-");
+  mySerial.print(pressValue4,2);
+  //mySerial.write("-");
   mySerial.print(",");
-  //mySerial.print(tempValue1);
-  mySerial.print("-");
+  mySerial.print(tempValue1);
+  //mySerial.write("-");
   mySerial.print(",");
-  //mySerial.println(tempValue2);
-  mySerial.println("-");
+  mySerial.println(tempValue2);
+  //mySerial.println("-");
   mySerial.flush();
-  digitalWrite(RS485_DIR_PIN,LOW);
+  mySerial.write(0x11);
+  digitalWrite(TX_ENABLE,LOW);
   }
 }
 

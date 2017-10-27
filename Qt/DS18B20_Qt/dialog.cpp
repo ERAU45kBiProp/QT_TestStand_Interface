@@ -68,9 +68,9 @@ Dialog::Dialog(QWidget *parent) :
         qDebug() << "Found the arduino port...\n";
         arduino->setPortName(arduino_uno_port_name);
         arduino->open(QSerialPort::ReadWrite);
-        arduino->setBaudRate(QSerialPort::Baud19200);
+        arduino->setBaudRate(QSerialPort::Baud115200);
         arduino->setDataBits(QSerialPort::Data8);
-        arduino->setFlowControl(QSerialPort::NoFlowControl);
+        arduino->setFlowControl(QSerialPort::SoftwareControl);
         arduino->setParity(QSerialPort::NoParity);
         arduino->setStopBits(QSerialPort::OneStop);
         QObject::connect(arduino, SIGNAL(readyRead()), this, SLOT(readSerial()));
@@ -96,6 +96,7 @@ void Dialog::readSerial()
      *
      */
     QStringList buffer_split = serialBuffer.split(","); //  split the serialBuffer string, parsing with ',' as the separator
+
     if (arduino->canReadLine()){
         serialData = arduino->readLine();
         serialData = serialData.trimmed();
@@ -112,6 +113,7 @@ void Dialog::readSerial()
         //serialBuffer = "";
         serialData.clear();
     }
+
 
 }
 
@@ -286,4 +288,5 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
 
    }
    }
+arduino->waitForBytesWritten(100);
 }
