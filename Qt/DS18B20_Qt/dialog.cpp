@@ -27,10 +27,10 @@ Dialog::Dialog(QWidget *parent) :
     temperature_value = 0.0;
 
 
-     //  Testing code, prints the description, vendor id, and product id of all ports.
-     //*//  Used it to determine the values for the arduino uno.
-     //*
-     //*
+    //  Testing code, prints the description, vendor id, and product id of all ports.
+    //*//  Used it to determine the values for the arduino uno.
+    //*
+    //*
     qDebug() << "Number of ports: " << QSerialPortInfo::availablePorts().length() << "\n";
     foreach(const QSerialPortInfo &serialPortInfo, QSerialPortInfo::availablePorts()){
         qDebug() << "Description: " << serialPortInfo.description() << "\n";
@@ -68,7 +68,7 @@ Dialog::Dialog(QWidget *parent) :
         qDebug() << "Found the arduino port...\n";
         arduino->setPortName(arduino_uno_port_name);
         arduino->open(QSerialPort::ReadWrite);
-        arduino->setBaudRate(QSerialPort::Baud115200);
+        arduino->setBaudRate(QSerialPort::Baud38400);
         arduino->setDataBits(QSerialPort::Data8);
         arduino->setFlowControl(QSerialPort::SoftwareControl);
         arduino->setParity(QSerialPort::NoParity);
@@ -90,20 +90,40 @@ Dialog::~Dialog()
 
 void Dialog::readSerial()
 {
+
     /*
      * readyRead() doesn't guarantee that the entire message will be received all at once.
      * The message can arrive split into parts.  Need to buffer the serial data and then parse for the temperature value.
      *
      */
-    QStringList buffer_split = serialBuffer.split(","); //  split the serialBuffer string, parsing with ',' as the separator
+    serialData += arduino->readAll();
+    while (serialData.length() >= 29) {
+        qDebug() << serialData << "\n";
+        while (serialData[0].operator !=(0x44)){
+            serialData.remove(0,1);
+        }
+        serialData.remove(0,1);
 
+        QByteArray serialDataBuffer = serialData.left(29);
+        serialData.remove(0,29);
+        qDebug() << serialDataBuffer << "\n";
+        serialBuffer = QString::fromStdString(serialDataBuffer.toStdString());
+        QStringList buffer_Split = serialBuffer.split(",");
+        if (buffer_Split.length() == 5) {
+        Dialog::updateInterface(buffer_Split);
+        }
+
+    }
+    arduino->clear();
+    //QStringList buffer_split = serialBuffer.split(","); //  split the serialBuffer string, parsing with ',' as the separator
+    /*
     if (arduino->canReadLine()){
         serialData = arduino->readLine();
         serialData = serialData.trimmed();
         serialBuffer = QString::fromStdString(serialData.toStdString());
-        buffer_split = serialBuffer.split(",");
+        serialBuffer = QString::fromStdString(serialData.toStdString());
         qDebug() << buffer_split << "\n";
-        if(buffer_split.length() == 7) {
+        if(buffer_split.length() == 5) {
         Dialog::updateInterface(buffer_split);
         if (recordingState) {
         Dialog::writeCSV(buffer_split);
@@ -113,180 +133,176 @@ void Dialog::readSerial()
         //serialBuffer = "";
         serialData.clear();
     }
-
+*/
 
 }
 
 void Dialog::updateInterface(QStringList sensor_readings)
 {
     //update the value displayed on the lcdNumber
-    ui->pressure1_display->display(sensor_readings[1]);
-   ui->pressure2_display->display(sensor_readings[2]);
-    ui->pressure3_display->display(sensor_readings[3]);
-    ui->pressure4_display->display(sensor_readings[4]);
-    ui->temp1_display->display(sensor_readings[5]);
-    ui->temp2_display->display(sensor_readings[6]);
 
-}
+    float sensorNumber1 = sensor_readings[1].toFloat() * 5 / 1024 * 124.724 - 58.461;
+    float sensorNumber2 = sensor_readings[2].toFloat() * 5 / 1024;
+    float sensorNumber3 = sensor_readings[3].toFloat() * 5 / 1024 * 124.724 - 58.461;
+    float sensorNumber4 = sensor_readings[4].toFloat() * 5 / 1024;
 
-void Dialog::writeCSV(QStringList data)
-{
-    QFile file(fileName);
-    if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
-        QTextStream stream(&file);
-        stream << data[0] << "," << data[1] <<"," << data[2] << "," << data[3] << "," << data[4] << "," << data[5] << "," <<data[6]<< "\n";
+    QString outputString1 = QString::number(sensorNumber1, 'f', 2);
+    QString outputString2 = QString::number(sensorNumber2, 'f', 2);
+    QString outputString3 = QString::number(sensorNumber3, 'f', 2);
+    QString outputString4 = QString::number(sensorNumber4, 'f', 2);
+
+    ui->pressure1_display->display(outputString1);
+    ui->pressure2_display->display(outputString2);
+    ui->pressure3_display->display(outputString3);
+    ui->pressure4_display->display(outputString4);
+
+    if (recordingState) {
+        QFile file(fileName);
+        if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
+            QTextStream stream(&file);
+            stream << sensor_readings[0] << "," << outputString1 <<"," << outputString2 << "," << outputString3 << "," << outputString4 << "\n";
+        }
     }
 }
 
+
 void Dialog::keyReleaseEvent(QKeyEvent *event)
 {
-   if(event->key() == Qt::Key_A) //Engine Purge Open
-   {
-       arduino->write("A");
-       ui->EnginePurgeState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_Z) //Engine Purge Close
-   {
-       arduino->write("Z");
-       ui->EnginePurgeState->setText("CLOSED");
-   }
-   else if(event->key() == Qt::Key_S) //LOX Press Open
-   {
-       arduino->write("S");
-       ui->LOXPressState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_X) //LOX Press Close
-   {
-       arduino->write("X");
-       ui->LOXPressState->setText("CLOSED");
-   }
-   else if(event->key() == Qt::Key_D) //LOX Vent Open
-   {
-       arduino->write("D");
-       ui->LOXVentState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_C) //LOX Vent Close
-   {
-       arduino->write("C");
-       ui->LOXVentState->setText("CLOSED");
-   }
-   else if(event->key() == Qt::Key_F && !propFlowInhibit) //Injector Chill Open
-   {
-       arduino->write("F");
-       ui->InjectorChillState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_V) //Injector Chill Close
-   {
-       arduino->write("V");
-       if (!propFlowInhibit) {
-       ui->InjectorChillState->setText("CLOSED");
-       }
-   }
-   else if(event->key() == Qt::Key_G && !propFlowInhibit) //LOX Main Open
-   {
-       arduino->write("G");
-       ui->LOXMainState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_B) //LOX Main Close
-   {
-       arduino->write("B");
-       if (!propFlowInhibit) {
-       ui->LOXMainState->setText("CLOSED");
-       }
-   }
-   else if(event->key() == Qt::Key_H) //Fuel Press Open
-   {
-       arduino->write("H");
-       ui->FuelPressState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_N) //Fuel Press Close
-   {
-       arduino->write("N");
-       ui->FuelPressState->setText("CLOSED");
-   }
-   else if(event->key() == Qt::Key_J && !propFlowInhibit) //Fuel Pre-Stage Open
-   {
-       arduino->write("J");
-       ui->FuelPreState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_M) //Fuel Pre-Stage Close
-   {
-       arduino->write("M");
-       if (!propFlowInhibit) {
-       ui->FuelPreState->setText("CLOSED");
-       }
-   }
-   else if(event->key() == Qt::Key_K && !propFlowInhibit) //Fuel Main Open
-   {
-       arduino->write("K");
-       ui->FuelMainState->setText("OPEN");
-   }
-   else if(event->key() == Qt::Key_Comma) //Fuel Main Close
-   {
-       arduino->write(",");
-       if (!propFlowInhibit) {
-       ui->FuelMainState->setText("CLOSED");
-       }
-   }
-   else if(event->key() == Qt::Key_8) //Prop Inhibit On
-   {
-       arduino->write("8");
-       propFlowInhibit = true;
-       arduino->write(",");
-       ui->FuelPreState->setText("INHIBIT");
-       arduino->write("M");
-       ui->LOXMainState->setText("INHIBIT");
-       arduino->write("B");
-       ui->InjectorChillState->setText("INHIBIT");
-       arduino->write("V");
-       ui->FuelMainState->setText("INHIBIT");
+    if (event->isAutoRepeat() == false){
+        switch(event->key()) {
+        case Qt::Key_A: //Engine Purge Open
+            arduino->write("A");
+            ui->EnginePurgeState->setText("OPEN");
+            break;
+        case Qt::Key_Z: //Engine Purge Close
+            arduino->write("Z");
+            ui->EnginePurgeState->setText("CLOSED");
+            break;
+        case Qt::Key_S: //LOX Press Open
+            arduino->write("S");
+            ui->LOXPressState->setText("OPEN");
+            break;
+        case Qt::Key_X: //LOX Press Close
+            arduino->write("X");
+            ui->LOXPressState->setText("CLOSED");
+            break;
+        case Qt::Key_D: //LOX Vent Open
+            arduino->write("D");
+            ui->LOXVentState->setText("OPEN");
+            break;
+        case Qt::Key_C: //LOX Vent Close
+            arduino->write("C");
+            ui->LOXVentState->setText("CLOSED");
+            break;
+        case Qt::Key_F: //Injector Chill Open
+            if (!propFlowInhibit)
+            {
+                arduino->write("F");
+                ui->InjectorChillState->setText("OPEN");
+            }
+            break;
+        case Qt::Key_V: //Injector Chill Close
+            arduino->write("V");
+            if (!propFlowInhibit) {
+                ui->InjectorChillState->setText("CLOSED");
+            }
+            break;
+        case Qt::Key_G:
+            if (!propFlowInhibit) //LOX Main Open
+            {
+                arduino->write("G");
+                ui->LOXMainState->setText("OPEN");
+            }
+            break;
+        case Qt::Key_B: //LOX Main Close
+            arduino->write("B");
+            if (!propFlowInhibit) {
+                ui->LOXMainState->setText("CLOSED");
+            }
+            break;
+        case Qt::Key_H: //Fuel Press Open
+            arduino->write("H");
+            ui->FuelPressState->setText("OPEN");
+            break;
+        case Qt::Key_N: //Fuel Press Close
+            arduino->write("N");
+            ui->FuelPressState->setText("CLOSED");
+            break;
+        case Qt::Key_J: //Fuel Pre-Stage Open
+            if (!propFlowInhibit)
+            {
+                arduino->write("J");
+                ui->FuelPreState->setText("OPEN");
+            }
+            break;
+        case Qt::Key_M: //Fuel Pre-Stage Close
+                arduino->write("M");
+            if (!propFlowInhibit) {
+                ui->FuelPreState->setText("CLOSED");
+            }
+            break;
+        case Qt::Key_K:
+            if(!propFlowInhibit) //Fuel Main Open
+            {
+                arduino->write("K");
+                ui->FuelMainState->setText("OPEN");
+            }
+            break;
+        case Qt::Key_Comma: //Fuel Main Close
+            arduino->write(",");
+            if (!propFlowInhibit) {
+                ui->FuelMainState->setText("CLOSED");
+            }
+            break;
+        case Qt::Key_8: //Prop Inhibit On
+            arduino->write("8");
+            propFlowInhibit = true;
+            ui->FuelPreState->setText("INHIBIT");
+            ui->LOXMainState->setText("INHIBIT");
+            ui->InjectorChillState->setText("INHIBIT");
+            ui->FuelMainState->setText("INHIBIT");
+            break;
+        case Qt::Key_9: //Prop Inhibit Off
+            arduino->write("9");
+            propFlowInhibit = false;
 
-   }
-   else if(event->key() == Qt::Key_9) //Prop Inhibit Off
-   {
-       arduino->write("9");
-       propFlowInhibit = false;
-
-       ui->FuelPreState->setText("CLOSED");
-       ui->LOXMainState->setText("CLOSED");
-       ui->InjectorChillState->setText("CLOSED");
-       ui->FuelMainState->setText("CLOSED");
-   }
-   else if(event->key() == Qt::Key_Minus) //PreStage
-   {
-       arduino->write("-");
-   }
-   else if(event->key() == Qt::Key_Equal) //Main Stage
-   {
-       arduino->write("=");
-   }
-   else if(event->key() == Qt::Key_Backslash) //Shutdown
-   {
-       arduino->write("[");
-   }
-   else if(event->key() == Qt::Key_BracketRight) //Purge
-   {
-       arduino->write("]");
-   }
-   else if(event->key() == Qt::Key_R) //Toggle data collection
-   {
-       recordingState = !recordingState;
-               if (recordingState) {
-                   arduino->write("R");
-        ui->recordingLabel->setText("RECORDING: ON");
+            ui->FuelPreState->setText("CLOSED");
+            ui->LOXMainState->setText("CLOSED");
+            ui->InjectorChillState->setText("CLOSED");
+            ui->FuelMainState->setText("CLOSED");
+            break;
+        case Qt::Key_Minus: //PreStage
+            arduino->write("-");
+            break;
+        case Qt::Key_Equal: //Main Stage
+            arduino->write("=");
+            break;
+        case Qt::Key_Backslash: //Shutdown
+            arduino->write("[");
+            break;
+        case Qt::Key_BracketRight: //Purge
+            arduino->write("]");
+            break;
+        case Qt::Key_R: //Toggle data collection
+            recordingState = !recordingState;
+            if (recordingState) {
+                arduino->write("R");
+                ui->recordingLabel->setText("RECORDING: ON");
                 QString nameString = QDateTime::currentDateTime().toString("MM.dd.yyyy.hh.mm.ss");
-               fileName = "Data." + nameString + ".csv";
+                fileName = "Data." + nameString + ".csv";
                 qDebug() << fileName << "\n";
-               QFile file(fileName);
-               if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
-                   QTextStream stream(&file);
-                   stream << "Time (ms),P1(psi),P2(psi),P3(psi),P4(psi),T1,T2\n\n";
-               }
-   }
-               else {
-               ui->recordingLabel->setText("RECORDING: OFF");
-
-   }
-   }
-arduino->waitForBytesWritten(100);
+                QFile file(fileName);
+                if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
+                    QTextStream stream(&file);
+                    stream << "Time (ms),P1(psi),P2(psi),P3(psi),P4(psi),T1,T2\n\n";
+                }
+            }
+            else {
+                ui->recordingLabel->setText("RECORDING: OFF");
+            }
+            break;
+        default:break;
+        }
+        arduino->waitForBytesWritten(100);
+    }
 }

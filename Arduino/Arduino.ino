@@ -15,7 +15,7 @@ const int PT1 = A0;
 const int PT2 = A1;
 const int PT3 = A2;
 const int PT4 = A3;
-const int timeDelay = 20;
+const int timeDelay = 7;
 
 const int TX_ENABLE = 4;
 
@@ -32,17 +32,17 @@ long timer2 = 0;
 long timer3 = 0;
 float timerValue = 0;
 
-float pressValue1 = 0;
-float pressValue2 = 0;
-float pressValue3 = 0;
-float pressValue4 = 0;
+int pressValue1 = 0;
+int pressValue2 = 0;
+int pressValue3 = 0;
+int pressValue4 = 0;
 
 int tempValue1 = 0;
 int tempValue2 = 0;
 
 SoftwareSerial mySerial(2,3);
 void setup() {
-  mySerial.begin(115200);
+  mySerial.begin(38400);
   Serial.begin(9600);
   Serial.println("Starting...");
 
@@ -65,7 +65,9 @@ void setup() {
   digitalWrite(fuelPressOutput, HIGH);
   digitalWrite(fuelPreStageOutput, HIGH);
   digitalWrite(fuelMainOutput, HIGH);
-}
+  while(!mySerial);
+  }
+
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -166,9 +168,11 @@ void loop() {
           timer2 = millis();
           break;
         default:
+          Serial.print("unrecognized command");
           break;
       }
     }
+    mySerial.flush();
   }
 
   if (preStageFlag) {
@@ -209,39 +213,100 @@ void loop() {
     }
   }
 
-  pressValue1 = float(analogRead(PT1))*5/1024*124.724 - 58.461;
-  pressValue2 = float(analogRead(PT2))*5/1024;
-  pressValue3 = float(analogRead(PT3))*5/1024*124.724 - 58.461;
-  pressValue4 = float(analogRead(PT4))*5/1024;
-
+  //pressValue1 = float(analogRead(PT1))*5/1024*124.724 - 58.461;
+  pressValue1 = analogRead(PT1);
+  //pressValue2 = float(analogRead(PT2))*5/1024;
+  pressValue2 = analogRead(PT2);
+  //pressValue3 = float(analogRead(PT3))*5/1024*124.724 - 58.461;
+  pressValue3 = analogRead(PT3);
+  //pressValue4 = float(analogRead(PT4))*5/1024;
+  pressValue4 = analogRead(PT4);
+  
   if (((millis() - timer3) > timeDelay) && !mySerial.available() ){
+    mySerial.flush();
   digitalWrite(TX_ENABLE,HIGH);
   mySerial.write(0x13);
+  mySerial.write(0x44);
   timer3 = millis();
-  timerValue = float(millis() - timer2)/1000;
-  //mySerial.write("-");
-  mySerial.print(millis());
+  if (timer3 < 10){
+    mySerial.print("0");
+  }
+  if (timer3 < 100){
+    mySerial.print("0");
+  }
+  if (timer3 < 1000){
+    mySerial.print("0");
+  }
+  if (timer3 < 10000){
+    mySerial.print("0");
+  }
+  if (timer3 < 100000){
+    mySerial.print("0");
+  }
+  if (timer3 < 1000000){
+    mySerial.print("0");
+  }
+  if (timer3 < 10000000){
+    mySerial.print("0");
+  }
+  if (timer3 < 100000000){
+    mySerial.print("0");
+  }
+ 
+  mySerial.print(timer3);
+  
   mySerial.print(",");
   //mySerial.write("-");
-  mySerial.print(pressValue1,2);
+  if (pressValue1 < 10) {
+    mySerial.print("000");
+  }
+  else if (pressValue1 < 100) {
+    mySerial.print("00");
+  }
+  else if (pressValue1 < 1000){
+    mySerial.print("0");
+  }
+  mySerial.print(pressValue1);
   mySerial.print(",");
-  mySerial.print(pressValue2,2);
+  if (pressValue2 < 10) {
+    mySerial.print("000");
+  }
+  else if (pressValue2 < 100) {
+    mySerial.print("00");
+  }
+  else if (pressValue2 < 1000){
+    mySerial.print("0");
+  }
+  mySerial.print(pressValue2);
+  
   //mySerial.write("-");
   mySerial.print(",");
   //mySerial.write("-");
-  mySerial.print(pressValue3,2);
+  if (pressValue3 < 10) {
+    mySerial.print("000");
+  }
+  else if (pressValue3 < 100) {
+    mySerial.print("00");
+  }
+  else if (pressValue3 < 1000){
+    mySerial.print("0");
+  }
+  mySerial.print(pressValue3);
   mySerial.print(",");
-  mySerial.print(pressValue4,2);
-  //mySerial.write("-");
-  mySerial.print(",");
-  mySerial.print(tempValue1);
-  //mySerial.write("-");
-  mySerial.print(",");
-  mySerial.println(tempValue2);
-  //mySerial.println("-");
+  if (pressValue4 < 10) {
+    mySerial.print("000");
+  }
+  else if (pressValue4 < 100) {
+    mySerial.print("00");
+  }
+  else if (pressValue4 < 1000){
+    mySerial.print("0");
+  }
+  mySerial.print(pressValue4);
   mySerial.flush();
   mySerial.write(0x11);
   digitalWrite(TX_ENABLE,LOW);
+  
   }
 }
 

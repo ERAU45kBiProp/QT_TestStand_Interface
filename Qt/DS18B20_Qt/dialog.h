@@ -23,7 +23,6 @@ private slots:
     void keyReleaseEvent(QKeyEvent *);
     void readSerial();
     void updateInterface(QStringList);
-    void writeCSV(QStringList);
 
 private:
     Ui::Dialog *ui;
