@@ -42,7 +42,7 @@ int tempValue2 = 0;
 
 SoftwareSerial mySerial(2,3);
 void setup() {
-  mySerial.begin(38400);
+  mySerial.begin(115200);
   Serial.begin(9600);
   Serial.println("Starting...");
 
