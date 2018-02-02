@@ -97,19 +97,20 @@ void Dialog::readSerial()
      *
      */
     serialData += arduino->readAll();
-    while (serialData.length() >= 29) {
+    while (serialData.length() >= 39) {
         //qDebug() << serialData << "\n";
         while (serialData[0].operator !=(0x44)){
             serialData.remove(0,1);
         }
         serialData.remove(0,1);
 
-        QByteArray serialDataBuffer = serialData.left(29);
-        serialData.remove(0,29);
+        QByteArray serialDataBuffer = serialData.left(39);
+        serialData.remove(0,39);
         qDebug() << serialDataBuffer << "\n";
         serialBuffer = QString::fromStdString(serialDataBuffer.toStdString());
         QStringList buffer_Split = serialBuffer.split(",");
-        if (buffer_Split.length() == 5) {
+
+        if (buffer_Split.length() == 7) {
         Dialog::updateInterface(buffer_Split);
         }
 
@@ -140,27 +141,76 @@ void Dialog::readSerial()
 void Dialog::updateInterface(QStringList sensor_readings)
 {
     //update the value displayed on the lcdNumber
-
-    float sensorNumber1 = sensor_readings[1].toFloat() * 5 / 1024 * 124.724 - 58.461;
-    float sensorNumber2 = sensor_readings[2].toFloat() * 5 / 1024;
+    float criticalTemperature = 25;
+    float criticalPressure = 40;
+    float sensorNumber1 = sensor_readings[1].toFloat() * 5 / 1024 /.005;
+    float sensorNumber2 = sensor_readings[2].toFloat() * 5 / 1024 /.005;
     float sensorNumber3 = sensor_readings[3].toFloat() * 5 / 1024 * 124.724 - 58.461;
     float sensorNumber4 = sensor_readings[4].toFloat() * 5 / 1024;
+    float sensorNumber5 = sensor_readings[5].toFloat() * 5 / 1024 * 124.724 - 58.461;
+    float sensorNumber6 = sensor_readings[6].toFloat() * 5 / 1024;
 
     QString outputString1 = QString::number(sensorNumber1, 'f', 2);
     QString outputString2 = QString::number(sensorNumber2, 'f', 2);
     QString outputString3 = QString::number(sensorNumber3, 'f', 2);
     QString outputString4 = QString::number(sensorNumber4, 'f', 2);
+    QString outputString5 = QString::number(sensorNumber5, 'f', 2);
+    QString outputString6 = QString::number(sensorNumber6, 'f', 2);
 
-    ui->pressure1_display->display(outputString1);
-    ui->pressure2_display->display(outputString2);
-    ui->pressure3_display->display(outputString3);
-    ui->pressure4_display->display(outputString4);
+    if (sensorNumber1 > criticalTemperature) {
+    ui->temp1_display->setStyleSheet("QLCDNumber { color: red; background-color: yellow }");
+    }
+    else {
+        ui->temp1_display->setStyleSheet("QLCDNumber { color: black; background-color: white }");
+    }
+
+    if (sensorNumber2 > criticalTemperature) {
+    ui->temp2_display->setStyleSheet("QLCDNumber { color: red; background-color: yellow }");
+    }
+    else {
+        ui->temp2_display->setStyleSheet("QLCDNumber { color: black; background-color: white }");
+    }
+
+    if (sensorNumber3 > criticalPressure) {
+    ui->pressure1_display->setStyleSheet("QLCDNumber { color: red; background-color: yellow }");
+    }
+    else {
+        ui->pressure1_display->setStyleSheet("QLCDNumber { color: black; background-color: white }");
+    }
+
+    if (sensorNumber4 > criticalPressure) {
+    ui->pressure2_display->setStyleSheet("QLCDNumber { color: red; background-color: yellow }");
+    }
+    else {
+        ui->pressure2_display->setStyleSheet("QLCDNumber { color: black; background-color: white }");
+    }
+
+    if (sensorNumber5 > criticalPressure) {
+    ui->pressure3_display->setStyleSheet("QLCDNumber { color: red; background-color: yellow }");
+    }
+    else {
+        ui->pressure3_display->setStyleSheet("QLCDNumber { color: black; background-color: white }");
+    }
+
+    if (sensorNumber6 > criticalPressure) {
+    ui->pressure4_display->setStyleSheet("QLCDNumber { color: red; background-color: yellow }");
+    }
+    else {
+        ui->pressure4_display->setStyleSheet("QLCDNumber { color: black; background-color: white }");
+    }
+
+    ui->temp1_display->display(outputString1);
+    ui->temp2_display->display(outputString2);
+    ui->pressure1_display->display(outputString3);
+    ui->pressure2_display->display(outputString4);
+    ui->pressure3_display->display(outputString5);
+    ui->pressure4_display->display(outputString6);
 
     if (recordingState) {
         QFile file(fileName);
         if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
             QTextStream stream(&file);
-            stream << sensor_readings[0] << "," << outputString1 <<"," << outputString2 << "," << outputString3 << "," << outputString4 << "\n";
+            stream << sensor_readings[0] << "," << outputString1 <<"," << outputString2 << "," << outputString3 << "," << outputString4 << "," << outputString5 <<"," << outputString6 << "\n";
         }
     }
 }
@@ -294,7 +344,7 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
                 QFile file(fileName);
                 if (file.open(QIODevice::WriteOnly| QIODevice::Append)){
                     QTextStream stream(&file);
-                    stream << "Time (ms),P1(psi),P2(psi),P3(psi),P4(psi),T1,T2\n\n";
+                    stream << "Time (ms),T1(C),T2(C),P1(psi),P2(psi),P3(psi),P4(psi)\n\n";
                 }
             }
             else {

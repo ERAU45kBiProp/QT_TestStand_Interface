@@ -15,7 +15,9 @@ const int PT1 = A0;
 const int PT2 = A1;
 const int PT3 = A2;
 const int PT4 = A3;
-const int timeDelay = 7;
+const int TC1 = A4;
+const int TC2 = A5;
+const int timeDelay = 10;
 
 const int TX_ENABLE = 4;
 
@@ -213,14 +215,12 @@ void loop() {
     }
   }
 
-  //pressValue1 = float(analogRead(PT1))*5/1024*124.724 - 58.461;
   pressValue1 = analogRead(PT1);
-  //pressValue2 = float(analogRead(PT2))*5/1024;
   pressValue2 = analogRead(PT2);
-  //pressValue3 = float(analogRead(PT3))*5/1024*124.724 - 58.461;
   pressValue3 = analogRead(PT3);
-  //pressValue4 = float(analogRead(PT4))*5/1024;
   pressValue4 = analogRead(PT4);
+  tempValue1 = analogRead(TC1);
+  tempValue2 = analogRead(TC2);
   
   if (((millis() - timer3) > timeDelay) && !mySerial.available() ){
     mySerial.flush();
@@ -256,7 +256,33 @@ void loop() {
   mySerial.print(timer3);
   
   mySerial.print(",");
-  //mySerial.write("-");
+  
+   if (tempValue1 < 10) {
+    mySerial.print("000");
+  }
+  else if (tempValue1 < 100) {
+    mySerial.print("00");
+  }
+  else if (tempValue1 < 1000){
+    mySerial.print("0");
+  }
+  mySerial.print(tempValue1);
+  
+  mySerial.print(",");
+
+     if (tempValue2 < 10) {
+    mySerial.print("000");
+  }
+  else if (tempValue2 < 100) {
+    mySerial.print("00");
+  }
+  else if (tempValue2 < 1000){
+    mySerial.print("0");
+  }
+  mySerial.print(tempValue2);
+  
+  mySerial.print(",");
+  
   if (pressValue1 < 10) {
     mySerial.print("000");
   }
@@ -267,7 +293,9 @@ void loop() {
     mySerial.print("0");
   }
   mySerial.print(pressValue1);
+  
   mySerial.print(",");
+  
   if (pressValue2 < 10) {
     mySerial.print("000");
   }
@@ -279,9 +307,8 @@ void loop() {
   }
   mySerial.print(pressValue2);
   
-  //mySerial.write("-");
   mySerial.print(",");
-  //mySerial.write("-");
+  
   if (pressValue3 < 10) {
     mySerial.print("000");
   }
@@ -292,7 +319,9 @@ void loop() {
     mySerial.print("0");
   }
   mySerial.print(pressValue3);
+  
   mySerial.print(",");
+  
   if (pressValue4 < 10) {
     mySerial.print("000");
   }
@@ -303,6 +332,7 @@ void loop() {
     mySerial.print("0");
   }
   mySerial.print(pressValue4);
+  
   mySerial.flush();
   mySerial.write(0x11);
   digitalWrite(TX_ENABLE,LOW);
